@@ -31,7 +31,7 @@ public class LookupSecretRequest {
     private SecretsConfiguration configuration;
 
     @Expose
-    @SerializedName("Keys")
+    @SerializedName("keys")
     private List<String> keys;
 
     public LookupSecretRequest(String secretsFilePath, List<String> keys) {

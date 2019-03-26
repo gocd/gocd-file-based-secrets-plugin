@@ -20,9 +20,11 @@ import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 class LookupSecretsRequestExecutorTest {
     private File databaseFile;
@@ -45,14 +48,19 @@ class LookupSecretsRequestExecutorTest {
     }
 
     @Test
-    void shouldLookupSecrets() {
+    void shouldLookupSecrets() throws JSONException {
         GoPluginApiRequest request = mock(GoPluginApiRequest.class);
         when(request.requestBody()).thenReturn(new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("secret-key", "param1")).toJSON());
 
         GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(request);
 
         assertThat(response.responseCode()).isEqualTo(200);
-        assertThat(response.responseBody()).isEqualTo("{\"secret-key\":\"secret-value\"}");
+        assertEquals("[\n" +
+                "  {\n" +
+                "    \"key\": \"secret-key\",\n" +
+                "    \"value\": \"secret-value\"\n" +
+                "  }\n" +
+                "]", response.responseBody(), false);
     }
 
     @Test
@@ -64,7 +72,7 @@ class LookupSecretsRequestExecutorTest {
         GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(request);
 
         assertThat(response.responseCode()).isEqualTo(200);
-        assertThat(response.responseBody()).isEqualTo("{}");
+        assertThat(response.responseBody()).isEqualTo("[]");
     }
 
 }

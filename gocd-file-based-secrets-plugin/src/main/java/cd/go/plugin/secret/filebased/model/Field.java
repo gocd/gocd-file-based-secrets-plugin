@@ -7,26 +7,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Optional;
 
 public abstract class Field {
-    private String key;
+    @Expose
+    @SerializedName("key")
+    protected String key;
 
     @Expose
-    @SerializedName("display-name")
-    protected String displayName;
+    @SerializedName("metadata")
+    protected Metadata metadata;
 
-    @Expose
-    @SerializedName("display-order")
-    protected String displayOrder;
-
-    @Expose
-    @SerializedName("required")
-    protected Boolean required;
-
-    public Field(String key, String displayName, String displayOrder, Boolean required) {
+    public Field(String key, String displayName, boolean required, boolean secure) {
         this.key = key;
-
-        this.displayName = displayName;
-        this.displayOrder = displayOrder;
-        this.required = required;
+        this.metadata = new Metadata(required, secure, displayName);
     }
 
 

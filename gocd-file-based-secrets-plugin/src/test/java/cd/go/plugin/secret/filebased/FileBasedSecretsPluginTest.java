@@ -56,7 +56,7 @@ class FileBasedSecretsPluginTest {
             request.setRequestBody(lookupSecretRequest.toJSON());
             GoPluginApiResponse response = new FileBasedSecretsPlugin().handle(request);
 
-            JSONAssert.assertEquals(response.responseBody(), "{\"secret-key\":\"secret-value\"}", false);
+            JSONAssert.assertEquals("[{\"key\":\"secret-key\", \"value\":\"secret-value\"}]", response.responseBody(), false);
         }
 
         @Test
@@ -68,7 +68,7 @@ class FileBasedSecretsPluginTest {
             request.setRequestBody(lookupSecretRequest.toJSON());
             GoPluginApiResponse response = new FileBasedSecretsPlugin().handle(request);
 
-            JSONAssert.assertEquals(response.responseBody(), "{}", false);
+            JSONAssert.assertEquals(response.responseBody(), "[]", false);
         }
     }
 }

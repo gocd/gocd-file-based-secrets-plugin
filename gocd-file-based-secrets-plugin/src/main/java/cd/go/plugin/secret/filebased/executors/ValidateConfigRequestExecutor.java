@@ -24,23 +24,34 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static cd.go.plugin.secret.filebased.FileBasedSecretsPlugin.*;
+import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.*;
 
 
 public class ValidateConfigRequestExecutor {
     public GoPluginApiResponse execute(GoPluginApiRequest request) {
-        Map<String, String> errorMap = new HashMap();
+        List<Map<String, String>> errorList = new ArrayList<>();
         Map<String, String> configMap = new GsonBuilder().create().fromJson(request.requestBody(), new TypeToken<Map<String, String>>(){}.getType());
 
         configMap.entrySet().stream().forEach(entry -> {
             Field field = GetConfigRequestExecutor.FIELDS.get(entry.getKey());
             Optional<String> validationError = field.validate(entry.getValue());
-            validationError.ifPresent(error -> errorMap.put(field.getKey(), error));
+            validationError.ifPresent(error -> {
+                errorList.add(errorObject(field.getKey(), error));
+            });
         });
 
-        return new DefaultGoPluginApiResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, FileBasedSecretsPlugin.GSON.toJson(Collections.singletonMap("errors", errorMap)));
+        return new DefaultGoPluginApiResponse(
+                errorList.isEmpty() ? SUCCESS_RESPONSE_CODE : VALIDATION_FAILED, GSON.toJson(errorList));
+    }
+
+    private Map<String, String> errorObject(String key, String error) {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("key", key);
+        map.put("message", error);
+        return map;
     }
 }

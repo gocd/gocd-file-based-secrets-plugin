@@ -19,6 +19,8 @@ package cd.go.plugin.secret.filebased.executors;
 import cd.go.plugin.secret.filebased.FileBasedSecretsPlugin;
 import cd.go.plugin.secret.filebased.model.Field;
 import cd.go.plugin.secret.filebased.model.FilePathField;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
@@ -32,17 +34,17 @@ import static cd.go.plugin.secret.filebased.model.SecretsConfiguration.SECRETS_F
 
 
 public class GetConfigRequestExecutor {
+    public static final Gson GSON = new GsonBuilder().serializeNulls().create();
 
     public static final List<Field> FIELD_LIST = Arrays.asList(
-            new FilePathField(SECRETS_FILE_PATH_PROPERTY,
-                    "Secrets file path",
-                    "0",
+            new FilePathField(SECRETS_FILE_PATH_PROPERTY, "Secrets file path",
+                    true,
                     true)
     );
 
     public static final Map<String, Field> FIELDS = FIELD_LIST.stream().collect(Collectors.toMap(Field::getKey, Function.identity()));
 
     public GoPluginApiResponse execute() {
-        return DefaultGoPluginApiResponse.success(FileBasedSecretsPlugin.GSON.toJson(FIELDS));
+        return DefaultGoPluginApiResponse.success(GSON.toJson(FIELD_LIST));
     }
 }

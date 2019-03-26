@@ -19,6 +19,7 @@ package cd.go.plugin.secret.filebased;
 import cd.go.plugin.secret.filebased.executors.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thoughtworks.go.plugin.api.AbstractGoPlugin;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -32,13 +33,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Extension
-public class FileBasedSecretsPlugin implements GoPlugin {
+public class FileBasedSecretsPlugin extends AbstractGoPlugin {
     public static final Gson GSON = new GsonBuilder().serializeNulls().create();
     public static Logger LOGGER = Logger.getLoggerFor(FileBasedSecretsPlugin.class);
 
-    @Override
-    public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
-    }
 
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
@@ -58,6 +56,10 @@ public class FileBasedSecretsPlugin implements GoPlugin {
                     return new VerifyConnectionRequestExecutor().execute(request);
                 case REQUEST_GET_PLUGIN_ICON:
                     return new GetIconRequestExecutor().execute();
+                case PLUGIN_SETTINGS_GET_CONFIGURATION:
+                case PLUGIN_SETTINGS_GET_VIEW:
+                case PLUGIN_SETTINGS_VALIDATE_CONFIGURATION:
+                    return null;
             }
         }
 

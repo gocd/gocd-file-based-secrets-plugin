@@ -34,6 +34,8 @@ public class LookupSecretRequest {
     @SerializedName("keys")
     private List<String> keys;
 
+    public LookupSecretRequest() {}
+
     public LookupSecretRequest(String secretsFilePath, List<String> keys) {
         this.configuration = new SecretsConfiguration(secretsFilePath);
         this.keys = keys;

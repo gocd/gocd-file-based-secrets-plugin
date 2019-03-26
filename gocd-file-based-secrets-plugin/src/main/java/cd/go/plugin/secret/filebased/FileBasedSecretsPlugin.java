@@ -37,7 +37,6 @@ public class FileBasedSecretsPlugin extends AbstractGoPlugin {
     public static final Gson GSON = new GsonBuilder().serializeNulls().create();
     public static Logger LOGGER = Logger.getLoggerFor(FileBasedSecretsPlugin.class);
 
-
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
         Optional<RequestFromServer> requestFromServer = RequestFromServer.fromString(request.requestName());

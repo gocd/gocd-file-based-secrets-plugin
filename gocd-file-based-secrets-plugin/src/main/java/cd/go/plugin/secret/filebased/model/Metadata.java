@@ -22,15 +22,17 @@ import com.google.gson.annotations.SerializedName;
 class Metadata {
     @Expose
     @SerializedName("required")
-    private final boolean required;
+    private boolean required;
 
     @Expose
     @SerializedName("secure")
-    private final boolean secure;
+    private boolean secure;
 
     @Expose
     @SerializedName("display_name")
-    private final String displayName;
+    private String displayName;
+
+    public Metadata() {}
 
     public Metadata(boolean required, boolean secure, String displayName) {
         this.required = required;

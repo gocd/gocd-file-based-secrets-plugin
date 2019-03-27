@@ -15,6 +15,8 @@ public abstract class Field {
     @SerializedName("metadata")
     protected Metadata metadata;
 
+    public Field() {}
+
     public Field(String key, String displayName, boolean required, boolean secure) {
         this.key = key;
         this.metadata = new Metadata(required, secure, displayName);

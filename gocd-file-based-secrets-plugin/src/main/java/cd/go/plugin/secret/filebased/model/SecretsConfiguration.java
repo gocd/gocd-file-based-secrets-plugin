@@ -29,6 +29,8 @@ public class SecretsConfiguration {
     @SerializedName("SecretsFilePath")
     private String secretsFilePath;
 
+    public SecretsConfiguration() {}
+
     SecretsConfiguration(String secretsFilePath) {
         this.secretsFilePath = secretsFilePath;
     }

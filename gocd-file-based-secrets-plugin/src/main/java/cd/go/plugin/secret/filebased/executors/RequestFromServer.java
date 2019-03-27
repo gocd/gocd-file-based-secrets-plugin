@@ -24,7 +24,10 @@ public enum RequestFromServer {
     REQUEST_GET_CONFIG_METADATA(String.join(".", Constants.REQUEST_PREFIX, Constants._SECRETS_CONFIG_METADATA, "get-metadata")),
     REQUEST_GET_CONFIG_VIEW(String.join(".", Constants.REQUEST_PREFIX, Constants._SECRETS_CONFIG_METADATA, "get-view")),
     REQUEST_VALIDATE_CONFIG(String.join(".", Constants.REQUEST_PREFIX, Constants._SECRETS_CONFIG_METADATA, "validate")),
-    REQUEST_VERIFY_CONNECTION(String.join(".", Constants.REQUEST_PREFIX, Constants._SECRETS_CONFIG_METADATA, "verify-connection"));
+    REQUEST_VERIFY_CONNECTION(String.join(".", Constants.REQUEST_PREFIX, Constants._SECRETS_CONFIG_METADATA, "verify-connection")),
+    PLUGIN_SETTINGS_GET_CONFIGURATION(Constants.GO_PLUGIN_SETTINGS_PREFIX + ".get-configuration"),
+    PLUGIN_SETTINGS_GET_VIEW(Constants.GO_PLUGIN_SETTINGS_PREFIX + ".get-view"),
+    PLUGIN_SETTINGS_VALIDATE_CONFIGURATION(Constants.GO_PLUGIN_SETTINGS_PREFIX + ".validate-configuration");
 
 
     private final String requestName;
@@ -51,5 +54,6 @@ public enum RequestFromServer {
     private interface Constants {
         String REQUEST_PREFIX = "go.cd.secrets";
         String _SECRETS_CONFIG_METADATA = "secrets-config";
+        String GO_PLUGIN_SETTINGS_PREFIX = "go.plugin-settings";
     }
 }

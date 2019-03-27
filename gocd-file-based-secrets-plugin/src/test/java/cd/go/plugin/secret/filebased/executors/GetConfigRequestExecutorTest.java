@@ -30,6 +30,15 @@ class GetConfigRequestExecutorTest {
 
         assertThat(response.responseCode()).isEqualTo(200);
 
-        JSONAssert.assertEquals("{\"SecretsFilePath\":{\"display-order\":\"0\",\"display-name\":\"Secrets file path\",\"required\":true}}", response.responseBody(), false);
+        JSONAssert.assertEquals("[\n" +
+                "  {\n" +
+                "    \"key\": \"SecretsFilePath\",\n" +
+                "    \"metadata\": {\n" +
+                "      \"secure\": true,\n" +
+                "      \"display_name\": \"Secrets file path\",\n" +
+                "      \"required\": true\n" +
+                "    }\n" +
+                "  }\n" +
+                "]", response.responseBody(), false);
     }
 }

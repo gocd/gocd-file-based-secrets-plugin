@@ -27,12 +27,17 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static cd.go.plugin.secret.filebased.FileBasedSecretsPlugin.*;
 
 public class LookupSecretsRequestExecutor {
     public GoPluginApiResponse execute(GoPluginApiRequest request) {
         LookupSecretRequest lookupSecretsRequest = LookupSecretRequest.fromJSON(request.requestBody());
-        HashMap<String, String> response = new HashMap<>();
+        List<Map<String, String>> responseList = new ArrayList<>();
 
         File secretsFile = new File(lookupSecretsRequest.getSecretsFilePath());
 
@@ -41,13 +46,16 @@ public class LookupSecretsRequestExecutor {
             for (String key : lookupSecretsRequest.getKeys()) {
                 String secret = secretsDatabase.getSecret(key);
                 if (secret != null) {
-                    response.put(key, secret);
+                    Map<String, String> response = new HashMap<>();
+                    response.put("key", key);
+                    response.put("value", secret);
+                    responseList.add(response);
                 }
             }
 
         } catch (IOException | GeneralSecurityException | BadSecretException e) {
             return DefaultGoPluginApiResponse.error("Error while looking up secrets: " + e.getMessage());
         }
-        return DefaultGoPluginApiResponse.success(FileBasedSecretsPlugin.GSON.toJson(response));
+        return DefaultGoPluginApiResponse.success(GSON.toJson(responseList));
     }
 }

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.Optional;
 
 public class FilePathField extends NonBlankField {
-    public FilePathField(String key, String displayName, String displayOrder, Boolean required) {
-        super(key, displayName, displayOrder, required);
+    public FilePathField(String key, String displayName, boolean required, boolean secure) {
+        super(key, displayName, required, secure);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class FilePathField extends NonBlankField {
 
         if (!new File(filePath).exists()) {
             return Optional.of(
-                    String.format("'%s' must contain a valid file path", displayName)
+                    String.format("'%s' must contain a valid file path", metadata.getDisplayName())
             );
         }
         return Optional.empty();

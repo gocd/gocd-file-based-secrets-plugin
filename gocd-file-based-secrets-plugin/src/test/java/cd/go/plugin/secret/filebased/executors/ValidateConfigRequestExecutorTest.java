@@ -18,9 +18,12 @@ package cd.go.plugin.secret.filebased.executors;
 
 import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,16 +35,24 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.skyscreamer.jsonassert.JSONAssert.*;
 
 class ValidateConfigRequestExecutorTest {
 
     @Test
-    void shouldReturnErrorSecretFilePathIsEmpty() {
+    void shouldReturnErrorSecretFilePathIsEmpty() throws JSONException {
         GoPluginApiRequest request = mock(GoPluginApiRequest.class);
         when(request.requestBody()).thenReturn(new Gson().toJson(Collections.singletonMap("SecretsFilePath", "")));
 
         GoPluginApiResponse response = new ValidateConfigRequestExecutor().execute(request);
-        assertThat(response.responseBody()).isEqualTo("{\"errors\":{\"SecretsFilePath\":\"Secrets file path must not be blank\"}}");
+
+        assertThat(response.responseCode()).isEqualTo(DefaultGoPluginApiResponse.VALIDATION_FAILED);
+        assertEquals("[\n" +
+                "  {\n" +
+                "    \"key\": \"SecretsFilePath\",\n" +
+                "    \"message\": \"Secrets file path must not be blank\"\n" +
+                "  }\n" +
+                "]", response.responseBody(), false);
     }
 
     @Test
@@ -56,6 +67,7 @@ class ValidateConfigRequestExecutorTest {
         when(request.requestBody()).thenReturn(new Gson().toJson(requestMap));
 
         GoPluginApiResponse response = new ValidateConfigRequestExecutor().execute(request);
-        assertThat(response.responseBody()).isEqualTo("{\"errors\":{}}");
+        assertThat(response.responseCode()).isEqualTo(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE);
+        assertThat(response.responseBody()).isEqualTo("[]");
     }
 }

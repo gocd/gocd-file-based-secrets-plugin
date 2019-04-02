@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 @Parameters(commandDescription = "Adds a secret", commandNames = "add")
 public class AddSecretArgs extends HasNameArgs {
 
-    @Parameter(names = {"--value", "-v"}, description = "The value of the secret.", password = true)
+    @Parameter(names = {"--value", "-v"}, required = true, description = "The value of the secret.", password = true)
     public String secret;
 
     public void execute(Consumer<Integer> exitter) throws IOException, GeneralSecurityException {

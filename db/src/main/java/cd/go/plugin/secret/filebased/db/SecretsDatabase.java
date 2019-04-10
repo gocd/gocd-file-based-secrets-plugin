@@ -29,6 +29,7 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 
@@ -64,6 +65,10 @@ public class SecretsDatabase {
             return Cipher.decrypt(secretKey, secrets.get(name));
         }
         return null;
+    }
+
+    public Set<String> getAllSecretKeys() {
+        return secrets.keySet();
     }
 
     public SecretsDatabase removeSecret(String name) {

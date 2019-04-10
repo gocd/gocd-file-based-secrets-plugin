@@ -40,6 +40,7 @@ public class Main {
         AddSecretArgs addSecretArgs = new AddSecretArgs();
         RemoveSecretArgs removeSecretArgs = new RemoveSecretArgs();
         ShowSecretArgs showSecretArgs = new ShowSecretArgs();
+        ShowAllSecretKeysArgs keysArgs = new ShowAllSecretKeysArgs();
 
         JCommander cmd = JCommander.newBuilder()
                 .addObject(rootArgs)
@@ -47,6 +48,7 @@ public class Main {
                 .addCommand(addSecretArgs)
                 .addCommand(removeSecretArgs)
                 .addCommand(showSecretArgs)
+                .addCommand(keysArgs)
                 .build();
 
         String parsedCommand = null;
@@ -71,6 +73,9 @@ public class Main {
                     break;
                 case "show":
                     showSecretArgs.execute(exitter);
+                    break;
+                case "keys":
+                    keysArgs.execute(exitter);
                     break;
                 default:
                     throw new UnsupportedOperationException(parsedCommand);

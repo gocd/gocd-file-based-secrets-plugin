@@ -25,7 +25,11 @@ To build the jar, run `./gradlew clean test assemble`
   ```shell
   java -jar gocd-file-based-secrets-plugin-$VERSION$.jar show -f secret.db -n my-password
   ```
-  5. Remove a secret:
+  5. Show all secret keys:
+  ```shell
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar keys -f secret.db
+  ```
+  6. Remove a secret:
   ```shell
   java -jar gocd-file-based-secrets-plugin-$VERSION$.jar remove -f secret.db -n my-password
   ```

@@ -13,7 +13,10 @@ To build the jar, run `./gradlew clean test assemble`
 ## Usage instructions
   
   1. Download the plugin jar from the [GitHub Releases page](https://github.com/gocd/gocd-file-based-secrets-plugin)
-  2. Execute the `init` command to initialize the secret database:
+  2. Execute the `init` command to initialize the secret database. Although it's optional but it is recommended to 
+  store your secret file under CONFIG_DIR. Doing this will make secrets database file part of the backup process. 
+  The CONFIG_DIR is typically /etc/go on Linux and C:\Program Files\Go Server\config on Windows. 
+
   ```shell
   java -jar gocd-file-based-secrets-plugin-$VERSION$.jar init -f secret.db
   ```
@@ -43,22 +46,59 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
 * Example Configuration
 
     ```xml
-    <secretConfig id="Env1Secrets" pluginId="cd.go.secrets.file-based-plugin">
-        <description>All secrets for env1</description>
-         <configuration>
-            <property>
-                <key>SecretsFilePath</key>
-                <value>/godata/config/secretsDatabase.json</value>
-            </property>
-        </configuration>
-        <rules>
-            <allow action="refer" type="environment">env_*</allow>
-            <deny action="refer" type="pipeline_group">my_group</deny>
-            <allow action="refer" type="pipeline_group">other_group</allow>  
-        </rules>
-    </secretConfig>
+    <secretConfigs>
+      <secretConfig id="Env1Secrets" pluginId="cd.go.secrets.file-based-plugin">
+          <description>All secrets for env1</description>
+           <configuration>
+              <property>
+                  <key>SecretsFilePath</key>
+                  <value>/godata/config/secretsDatabase.json</value>
+              </property>
+          </configuration>
+          <rules>
+              <allow action="refer" type="environment">env_*</allow>
+              <deny action="refer" type="pipeline_group">my_group</deny>
+              <allow action="refer" type="pipeline_group">other_group</allow>
+          </rules>
+      </secretConfig>
+    </secretConfigs>
     ```
 `<rules>` tag defines where this secretConfig is allowed/denied to be referred.
+
+* The plugin can also be configured to use multiple secret database files if required:
+
+    ```xml
+    <secretConfigs>
+      <secretConfig id="Env1Secrets" pluginId="cd.go.secrets.file-based-plugin">
+          <description>All secrets for env1</description>
+           <configuration>
+              <property>
+                  <key>SecretsFilePath</key>
+                  <value>/godata/config/secretsDatabase.json</value>
+              </property>
+          </configuration>
+          <rules>
+              <allow action="refer" type="environment">env_*</allow>
+              <deny action="refer" type="pipeline_group">my_group</deny>
+              <allow action="refer" type="pipeline_group">other_group</allow>
+          </rules>
+      </secretConfig>
+      <secretConfig id="Env2Secrets" pluginId="cd.go.secrets.file-based-plugin">
+          <description>All secrets for env1</description>
+           <configuration>
+              <property>
+                  <key>SecretsFilePath</key>
+                  <value>/godata/config/secretsDatabase_env2.json</value>
+              </property>
+          </configuration>
+          <rules>
+              <allow action="refer" type="environment">env_*</allow>
+              <deny action="refer" type="pipeline_group">my_group</deny>
+              <allow action="refer" type="pipeline_group">other_group</allow>
+          </rules>
+      </secretConfig>
+    </secretConfigs>
+    ```
 
 ## Troubleshooting
 

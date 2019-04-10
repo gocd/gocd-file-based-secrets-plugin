@@ -39,6 +39,6 @@ class GetConfigRequestExecutorTest {
                 "      \"required\": true\n" +
                 "    }\n" +
                 "  }\n" +
-                "]", response.responseBody(), false);
+                "]", response.responseBody(), true);
     }
 }

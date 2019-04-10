@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.skyscreamer.jsonassert.JSONAssert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,8 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+
 class FileBasedSecretsPluginTest {
 
     private File databaseFile;
@@ -43,24 +45,41 @@ class FileBasedSecretsPluginTest {
     @BeforeEach
     void setup(@TempDir Path tempDir) throws GeneralSecurityException, IOException {
         this.databaseFile = new File(tempDir.toFile(), UUID.randomUUID().toString().substring(0, 8));
-        new SecretsDatabase().addSecret("secret-key", "secret-value").saveTo(databaseFile);
+        new SecretsDatabase()
+                .addSecret("secret-key", "secret-value")
+                .addSecret("username", "foo")
+                .addSecret("password", "bar").saveTo(databaseFile);
     }
 
     @Nested
     class LookupSecret {
         @Test
-        void shouldReturnValuesIfKeyIsPresent() throws UnhandledRequestTypeException, JSONException {
+        void shouldReturnValidResponseOnlyIfAllKeysArePresent() throws UnhandledRequestTypeException, JSONException {
             DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", RequestFromServer.REQUEST_SECRETS_LOOKUP.requestName());
-            LookupSecretRequest lookupSecretRequest = new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("secret-key", "non-existing-key"));
+            LookupSecretRequest lookupSecretRequest = new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("secret-key", "username", "password"));
 
             request.setRequestBody(lookupSecretRequest.toJSON());
             GoPluginApiResponse response = new FileBasedSecretsPlugin().handle(request);
 
-            JSONAssert.assertEquals("[{\"key\":\"secret-key\", \"value\":\"secret-value\"}]", response.responseBody(), false);
+            assertThat(response.responseCode()).isEqualTo(200);
+            assertEquals("[\n" +
+                    "  {\n" +
+                    "    \"key\": \"secret-key\",\n" +
+                    "    \"value\": \"secret-value\"\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"key\": \"username\",\n" +
+                    "    \"value\": \"foo\"\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"key\": \"password\",\n" +
+                    "    \"value\": \"bar\"\n" +
+                    "  }\n" +
+                    "]", response.responseBody(), true);
         }
 
         @Test
-        void shouldReturnEmptyResponseIfSecretWithGivenKeyIsNotPresent() throws UnhandledRequestTypeException, JSONException {
+        void shouldReturnNotFoundErrorResponseIfOneOrMoreSecretsWithGivenKeyAreNotPresent() throws UnhandledRequestTypeException, JSONException {
             DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", RequestFromServer.REQUEST_SECRETS_LOOKUP.requestName());
 
             LookupSecretRequest lookupSecretRequest = new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("non-exiting-key"));
@@ -68,7 +87,8 @@ class FileBasedSecretsPluginTest {
             request.setRequestBody(lookupSecretRequest.toJSON());
             GoPluginApiResponse response = new FileBasedSecretsPlugin().handle(request);
 
-            JSONAssert.assertEquals(response.responseBody(), "[]", false);
+            assertThat(response.responseCode()).isEqualTo(404);
+            assertEquals("{\"message\":\"Secrets with keys [non-exiting-key] not found.\"}", response.responseBody(), true);
         }
     }
 }

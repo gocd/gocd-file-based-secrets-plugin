@@ -43,7 +43,7 @@ class MainTest {
         void shouldPrintUsageAndExitWithBadStatusWhenNoOptionIsProvided() throws Exception {
             Util.withCapturedSysOut((out, err) -> {
                 new Main().run(dummyExitter);
-                assertThat(err.toString()).startsWith("Usage: <main class> [options] [command] [command options]");
+                assertThat(err.toString()).startsWith("Usage: java -jar <path.to.plugin.jar.file> [options] [command] [command options]");
                 assertThat(out.toString()).isEmpty();
                 verify(dummyExitter).accept(1);
             });
@@ -53,7 +53,7 @@ class MainTest {
         void shouldPrintUsageAndExitWithBadStatusWhenHelpOptionIsProvided() throws Exception {
             Util.withCapturedSysOut((out, err) -> {
                 new Main("-h").run(dummyExitter);
-                assertThat(err.toString()).startsWith("Usage: <main class> [options] [command] [command options]");
+                assertThat(err.toString()).startsWith("Usage: java -jar <path.to.plugin.jar.file> [options] [command] [command options]");
                 assertThat(out.toString()).isEmpty();
                 verify(dummyExitter).accept(1);
             });

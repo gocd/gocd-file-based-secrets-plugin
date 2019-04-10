@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Returns all secret keys", commandNames = "keys")
+@Parameters(commandDescription = "Returns all secret keys.", commandNames = "keys")
 public class ShowAllSecretKeysArgs extends DatabaseFileArgs {
     public void execute(Consumer<Integer> exitter) throws IOException, BadSecretException, GeneralSecurityException {
         Set<String> secretKeys = SecretsDatabase.readFrom(databaseFile).getAllSecretKeys();

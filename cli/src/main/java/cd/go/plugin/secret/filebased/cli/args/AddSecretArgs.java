@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Adds a secret", commandNames = "add")
+@Parameters(commandDescription = "Adds a secret.", commandNames = "add")
 public class AddSecretArgs extends HasNameArgs {
 
     @Parameter(names = {"--value", "-v"}, required = true, description = "The value of the secret.", password = true)

@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Returns value for given secret", commandNames = "show")
+@Parameters(commandDescription = "Returns value for given secret.", commandNames = "show")
 public class ShowSecretArgs extends HasNameArgs {
     public void execute(Consumer<Integer> exitter) throws IOException, BadSecretException, GeneralSecurityException {
         String secret = SecretsDatabase.readFrom(databaseFile).getSecret(key);

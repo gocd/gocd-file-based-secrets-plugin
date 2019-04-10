@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Removes given secret", commandNames = "remove")
+@Parameters(commandDescription = "Removes given secret.", commandNames = "remove")
 public class RemoveSecretArgs extends HasNameArgs {
     public void execute(Consumer<Integer> exitter) throws IOException, BadSecretException, GeneralSecurityException {
         SecretsDatabase secretsDatabase = SecretsDatabase.readFrom(databaseFile);

@@ -91,6 +91,8 @@ public class Main {
 
     private static void printUsageAndExit(JCommander cmd, String parsedCommand, int statusCode, Consumer<Integer> exitter) {
         StringBuilder out = new StringBuilder();
+        cmd.setProgramName("java -jar <path.to.plugin.jar.file>");
+        cmd.setColumnSize(100);
         if (parsedCommand == null) {
             cmd.usage(out);
         } else {

@@ -34,6 +34,32 @@ To build the jar, run `./gradlew clean test assemble`
   java -jar gocd-file-based-secrets-plugin-$VERSION$.jar remove -f secret.db -n my-password
   ```
 
+## Configuration
+
+The plugin needs to be configured to use the secrets database file. 
+
+The configuration can be added directly to the `config.xml` using the `<secretConfig>` configuration.
+
+* Example Configuration
+
+    ```xml
+    <secretConfig id="Env1Secrets" pluginId="cd.go.secrets.file-based-plugin">
+        <description>All secrets for env1</description>
+         <configuration>
+            <property>
+                <key>SecretsFilePath</key>
+                <value>/godata/config/secretsDatabase.json</value>
+            </property>
+        </configuration>
+        <rules>
+            <allow action="refer" type="environment">env_*</allow>
+            <deny action="refer" type="pipeline_group">my_group</deny>
+            <allow action="refer" type="pipeline_group">other_group</allow>  
+        </rules>
+    </secretConfig>
+    ```
+`<rules>` tag defines where this secretConfig is allowed/denied to be referred.
+
 ## Troubleshooting
 
 ### Verify Connection

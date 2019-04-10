@@ -22,6 +22,8 @@ import com.beust.jcommander.Parameters;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Parameters(commandDescription = "Returns value for given secret", commandNames = "show")
@@ -30,7 +32,7 @@ public class ShowSecretArgs extends HasNameArgs {
         String secret = SecretsDatabase.readFrom(databaseFile).getSecret(key);
 
         if (secret != null) {
-            System.out.print(secret);
+            System.out.println(secret);
         } else {
             System.err.println("Secret named " + key + " was not found.");
             exitter.accept(-1);

@@ -52,7 +52,7 @@ class ValidateConfigRequestExecutorTest {
                 "    \"key\": \"SecretsFilePath\",\n" +
                 "    \"message\": \"Secrets file path must not be blank\"\n" +
                 "  }\n" +
-                "]", response.responseBody(), false);
+                "]", response.responseBody(), true);
     }
 
     @Test

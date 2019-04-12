@@ -16,25 +16,26 @@
 
 package cd.go.plugin.secret.filebased.cli.args;
 
+import cd.go.plugin.secret.filebased.db.BadSecretException;
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Adds a secret.", commandNames = "add")
-public class AddSecretArgs extends HasNameArgs {
+@Parameters(commandDescription = "Returns all secret keys.", commandNames = "keys")
+public class ShowAllSecretKeysArgs extends DatabaseFileArgs {
+    public void execute(Consumer<Integer> exitter) throws IOException, BadSecretException, GeneralSecurityException {
+        Set<String> secretKeys = SecretsDatabase.readFrom(databaseFile).getAllSecretKeys();
 
-    @Parameter(names = {"--value", "-v"}, required = true, description = "The value of the secret.", password = true)
-    public String secret;
-
-    public void execute(Consumer<Integer> exitter) throws IOException, GeneralSecurityException {
-        SecretsDatabase.readFrom(databaseFile)
-                .addSecret(key, secret)
-                .saveTo(databaseFile);
-
-        System.err.println("Added secret named " + key + ".");
+        if (!secretKeys.isEmpty()) {
+            System.out.println(secretKeys);
+        } else {
+            System.err.println("There are no secrets in the secrets database file.");
+            exitter.accept(-1);
+        }
     }
 }

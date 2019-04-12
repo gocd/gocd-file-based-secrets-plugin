@@ -44,13 +44,17 @@ class LookupSecretsRequestExecutorTest {
     @BeforeEach
     void setup(@TempDir Path tempDir) throws GeneralSecurityException, IOException {
         this.databaseFile = new File(tempDir.toFile(), UUID.randomUUID().toString().substring(0, 8));
-        new SecretsDatabase().addSecret("secret-key", "secret-value").saveTo(databaseFile);
+        new SecretsDatabase()
+                .addSecret("secret-key", "secret-value")
+                .addSecret("username", "foo")
+                .addSecret("password", "bar").saveTo(databaseFile);
     }
 
     @Test
     void shouldLookupSecrets() throws JSONException {
         GoPluginApiRequest request = mock(GoPluginApiRequest.class);
-        when(request.requestBody()).thenReturn(new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("secret-key", "param1")).toJSON());
+        when(request.requestBody()).thenReturn(new LookupSecretRequest(databaseFile.getAbsolutePath(),
+                Arrays.asList("secret-key", "username", "password")).toJSON());
 
         GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(request);
 
@@ -59,20 +63,28 @@ class LookupSecretsRequestExecutorTest {
                 "  {\n" +
                 "    \"key\": \"secret-key\",\n" +
                 "    \"value\": \"secret-value\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"key\": \"username\",\n" +
+                "    \"value\": \"foo\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"key\": \"password\",\n" +
+                "    \"value\": \"bar\"\n" +
                 "  }\n" +
-                "]", response.responseBody(), false);
+                "]", response.responseBody(), true);
     }
 
     @Test
-    void shouldReturnEmptyResponseWhenSecretsAreNotPresent() {
+    void shouldReturnEmptyResponseWhenSecretsAreNotPresent() throws JSONException {
         GoPluginApiRequest request = mock(GoPluginApiRequest.class);
         when(request.requestBody()).thenReturn(
                 new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("randomKey1", "randomKey2")).toJSON());
 
         GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(request);
 
-        assertThat(response.responseCode()).isEqualTo(200);
-        assertThat(response.responseBody()).isEqualTo("[]");
+        assertThat(response.responseCode()).isEqualTo(404);
+        assertEquals("{\"message\":\"Secrets with keys [randomKey1, randomKey2] not found.\"}", response.responseBody(), true);
     }
 
 }

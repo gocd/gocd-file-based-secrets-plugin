@@ -43,7 +43,7 @@ class MainTest {
         void shouldPrintUsageAndExitWithBadStatusWhenNoOptionIsProvided() throws Exception {
             Util.withCapturedSysOut((out, err) -> {
                 new Main().run(dummyExitter);
-                assertThat(err.toString()).startsWith("Usage: <main class> [options] [command] [command options]");
+                assertThat(err.toString()).startsWith("Usage: java -jar <path.to.plugin.jar.file> [options] [command] [command options]");
                 assertThat(out.toString()).isEmpty();
                 verify(dummyExitter).accept(1);
             });
@@ -53,7 +53,7 @@ class MainTest {
         void shouldPrintUsageAndExitWithBadStatusWhenHelpOptionIsProvided() throws Exception {
             Util.withCapturedSysOut((out, err) -> {
                 new Main("-h").run(dummyExitter);
-                assertThat(err.toString()).startsWith("Usage: <main class> [options] [command] [command options]");
+                assertThat(err.toString()).startsWith("Usage: java -jar <path.to.plugin.jar.file> [options] [command] [command options]");
                 assertThat(out.toString()).isEmpty();
                 verify(dummyExitter).accept(1);
             });
@@ -141,7 +141,7 @@ class MainTest {
 
             Util.withCapturedSysOut((out, err) -> {
                 new Main("show", "-f", databaseFile.getAbsolutePath(), "-n", "username").run(dummyExitter);
-                assertThat(out.toString()).isEqualTo("foo");
+                assertThat(out.toString()).isEqualToIgnoringNewLines("foo");
                 assertThat(err.toString()).isEmpty();
                 verifyNoMoreInteractions(dummyExitter);
             });
@@ -171,6 +171,39 @@ class MainTest {
                 assertThat(err.toString())
                         .contains("FileNotFoundException")
                         .contains(databaseFile.getAbsolutePath());
+                verify(dummyExitter).accept(-1);
+            });
+        }
+    }
+
+
+    @Nested
+    class LookupAllKeys {
+        @Test
+        void shouldLookupSecretKeys(@TempDir Path tempDirectory) throws Exception {
+            File databaseFile = new File(tempDirectory.toFile(), UUID.randomUUID().toString().substring(0, 8));
+            new SecretsDatabase()
+                    .addSecret("username", "foo")
+                    .addSecret("password", "bar")
+                    .saveTo(databaseFile);
+
+            Util.withCapturedSysOut((out, err) -> {
+                new Main("keys", "-f", databaseFile.getAbsolutePath()).run(dummyExitter);
+                assertThat(out.toString()).isEqualToIgnoringNewLines("[username, password]");
+                verifyNoMoreInteractions(dummyExitter);
+            });
+        }
+
+        @Test
+        void shouldPrintNoKeysMessageWhenSecretsAreNotPresent(@TempDir Path tempDirectory) throws Exception {
+            File databaseFile = new File(tempDirectory.toFile(), UUID.randomUUID().toString().substring(0, 8));
+            new SecretsDatabase()
+                    .saveTo(databaseFile);
+
+            Util.withCapturedSysOut((out, err) -> {
+                new Main("keys", "-f", databaseFile.getAbsolutePath()).run(dummyExitter);
+                assertThat(out.toString()).isEmpty();
+                assertThat(err.toString()).isEqualToIgnoringNewLines("There are no secrets in the secrets database file.");
                 verify(dummyExitter).accept(-1);
             });
         }

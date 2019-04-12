@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.Consumer;
 
-@Parameters(commandDescription = "Initialize the secret database file", commandNames = "init")
+@Parameters(commandDescription = "Initialize the secret database file. Should be run before any other commands as it generates secrets database file used by other commands.", commandNames = "init")
 public class InitArgs extends DatabaseFileArgs {
     public void execute(Consumer<Integer> exitter) throws NoSuchAlgorithmException, IOException {
         FileUtils.write(databaseFile, new SecretsDatabase().toJSON(), StandardCharsets.UTF_8);

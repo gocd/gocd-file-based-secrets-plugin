@@ -16,20 +16,25 @@
 
 package cd.go.plugin.secret.filebased.model;
 
+import com.github.bdpiparva.plugin.base.annotations.Property;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class SecretsConfiguration {
+
     public static final String SECRETS_FILE_PATH_PROPERTY = "SecretsFilePath";
 
     private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+
     @Expose
     @SerializedName("SecretsFilePath")
+    @Property(name = "SecretsFilePath", required = true)
     private String secretsFilePath;
 
-    public SecretsConfiguration() {}
+    public SecretsConfiguration() {
+    }
 
     SecretsConfiguration(String secretsFilePath) {
         this.secretsFilePath = secretsFilePath;

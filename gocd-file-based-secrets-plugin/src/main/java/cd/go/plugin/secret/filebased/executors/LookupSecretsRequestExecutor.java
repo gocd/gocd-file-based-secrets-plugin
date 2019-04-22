@@ -16,12 +16,10 @@
 
 package cd.go.plugin.secret.filebased.executors;
 
-import cd.go.plugin.secret.filebased.FileBasedSecretsPlugin;
 import cd.go.plugin.secret.filebased.db.BadSecretException;
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
-import com.google.gson.Gson;
-import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.github.bdpiparva.plugin.base.dispatcher.LookupExecutor;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
@@ -30,13 +28,12 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
-import static cd.go.plugin.secret.filebased.FileBasedSecretsPlugin.*;
+public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretRequest> {
 
-public class LookupSecretsRequestExecutor {
     public static final int NOT_FOUND_ERROR_CODE = 404;
 
-    public GoPluginApiResponse execute(GoPluginApiRequest request) {
-        LookupSecretRequest lookupSecretsRequest = LookupSecretRequest.fromJSON(request.requestBody());
+    @Override
+    protected GoPluginApiResponse execute(LookupSecretRequest lookupSecretsRequest) {
         List<Map<String, String>> responseList = new ArrayList<>();
 
         File secretsFile = new File(lookupSecretsRequest.getSecretsFilePath());
@@ -65,5 +62,10 @@ public class LookupSecretsRequestExecutor {
         } catch (IOException | GeneralSecurityException | BadSecretException e) {
             return DefaultGoPluginApiResponse.error("Error while looking up secrets: " + e.getMessage());
         }
+    }
+
+    @Override
+    protected LookupSecretRequest parseRequest(String body) {
+        return LookupSecretRequest.fromJSON(body);
     }
 }

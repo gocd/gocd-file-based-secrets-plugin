@@ -41,6 +41,7 @@ gradle-app.setting
 .idea/modules.xml
 .idea/*.iml
 .idea/modules
+.idea
 
 # project specific ignores
 

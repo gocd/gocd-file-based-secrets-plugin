@@ -41,7 +41,7 @@ public class FileBasedSecretsPlugin implements GoPlugin {
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
         requestDispatcher = RequestDispatcherBuilder
                 .forSecret(goApplicationAccessor)
-                .icon("/plugin-icon.png", "image/png")
+                .icon("/plugin-icon.svg", "image/svg")
                 .configMetadata(SecretsConfiguration.class)
                 .configView("/secrets.template.html")
                 .validateSecretConfig()

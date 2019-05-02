@@ -19,7 +19,7 @@ package cd.go.plugin.secret.filebased.executors;
 import cd.go.plugin.secret.filebased.db.BadSecretException;
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
-import com.github.bdpiparva.plugin.base.dispatcher.LookupExecutor;
+import com.github.bdpiparva.plugin.base.executors.secrets.LookupExecutor;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 

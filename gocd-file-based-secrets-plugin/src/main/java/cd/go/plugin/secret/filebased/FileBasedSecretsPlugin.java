@@ -18,16 +18,13 @@ package cd.go.plugin.secret.filebased;
 
 import cd.go.plugin.secret.filebased.executors.LookupSecretsRequestExecutor;
 import cd.go.plugin.secret.filebased.model.SecretsConfiguration;
+import com.github.bdpiparva.plugin.base.dispatcher.BaseBuilder;
 import com.github.bdpiparva.plugin.base.dispatcher.RequestDispatcher;
-import com.github.bdpiparva.plugin.base.dispatcher.RequestDispatcherBuilder;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
-import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
@@ -35,12 +32,14 @@ import java.util.Arrays;
 
 @Extension
 public class FileBasedSecretsPlugin implements GoPlugin {
+
     private RequestDispatcher requestDispatcher;
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
-        requestDispatcher = RequestDispatcherBuilder
-                .forSecret(goApplicationAccessor)
+        requestDispatcher = BaseBuilder
+                .forSecrets()
+                .v1()
                 .icon("/plugin-icon.svg", "image/svg+xml")
                 .configMetadata(SecretsConfiguration.class)
                 .configView("/secrets.template.html")

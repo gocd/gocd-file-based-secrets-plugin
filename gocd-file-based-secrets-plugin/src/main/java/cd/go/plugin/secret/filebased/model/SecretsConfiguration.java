@@ -29,8 +29,8 @@ public class SecretsConfiguration {
     private static final Gson GSON = new GsonBuilder().serializeNulls().create();
 
     @Expose
-    @SerializedName("SecretsFilePath")
-    @Property(name = "SecretsFilePath", required = true)
+    @SerializedName(SECRETS_FILE_PATH_PROPERTY)
+    @Property(name = SECRETS_FILE_PATH_PROPERTY, required = true)
     private String secretsFilePath;
 
     public SecretsConfiguration() {

@@ -41,9 +41,9 @@ public class FileBasedSecretsPlugin implements GoPlugin {
                 .forSecrets()
                 .v1()
                 .icon("/plugin-icon.svg", "image/svg+xml")
-                .configMetadata(SecretsConfiguration.class)
+                .configMetadata(SecretsConfiguration.class, false)
                 .configView("/secrets.template.html")
-                .validateSecretConfig()
+                .validateSecretConfig(new SecretFilePathValidator())
                 .lookup(new LookupSecretsRequestExecutor())
                 .build();
     }

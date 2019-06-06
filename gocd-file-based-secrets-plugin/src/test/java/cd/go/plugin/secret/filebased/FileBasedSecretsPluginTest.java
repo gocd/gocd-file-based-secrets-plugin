@@ -18,6 +18,7 @@ package cd.go.plugin.secret.filebased;
 
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
+import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
@@ -27,21 +28,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
+import static cd.go.plugin.secret.filebased.model.SecretsConfiguration.SECRETS_FILE_PATH_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 class FileBasedSecretsPluginTest {
 
-    private static final String lookupSecretRequestName = "go.cd.secrets.secrets-lookup";
+    private static final String LOOKUP_SECRET_REQUEST_NAME = "go.cd.secrets.secrets-lookup";
+
+    private static final String REQUEST_VALIDATE_CONFIG = "go.cd.secrets.secrets-config.validate";
 
     private FileBasedSecretsPlugin secretsPlugin;
 
@@ -61,11 +67,80 @@ class FileBasedSecretsPluginTest {
     }
 
     @Nested
+    class ValidateConfig {
+
+        @Test
+        void shouldBeValidWhenSecretConfigPathIsValid(@TempDir File testDir) throws UnhandledRequestTypeException, IOException {
+            File secretFile = new File(testDir, "secret.db");
+            secretFile.createNewFile();
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", REQUEST_VALIDATE_CONFIG);
+            request.setRequestBody(new Gson().toJson(Collections.singletonMap(SECRETS_FILE_PATH_PROPERTY, secretFile.getAbsolutePath())));
+
+            GoPluginApiResponse response = secretsPlugin.handle(request);
+
+            assertThat(response.responseCode()).isEqualTo(200);
+            assertThat(response.responseBody()).isEqualTo("[]");
+        }
+
+        @Test
+        void shouldBeErrorWhenSecretFilePathIsNotProvided() throws UnhandledRequestTypeException {
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", REQUEST_VALIDATE_CONFIG);
+            request.setRequestBody(new Gson().toJson(Collections.singletonMap(SECRETS_FILE_PATH_PROPERTY, "")));
+
+            GoPluginApiResponse response = secretsPlugin.handle(request);
+
+            assertThat(response.responseCode()).isEqualTo(200);
+            assertThat(response.responseBody()).isEqualTo("[{\"key\":\"SecretsFilePath\",\"message\":\"SecretsFilePath must not be blank.\"}]");
+        }
+
+        @Test
+        void shouldBeErrorWhenSecretFileDoesNotExist(@TempDir File testDir) throws UnhandledRequestTypeException, JSONException {
+            File noneExistingFile = new File(testDir, "none-existing-file");
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", REQUEST_VALIDATE_CONFIG);
+            request.setRequestBody(new Gson().toJson(Collections.singletonMap(SECRETS_FILE_PATH_PROPERTY, noneExistingFile.getAbsolutePath())));
+
+            GoPluginApiResponse response = secretsPlugin.handle(request);
+
+            assertThat(response.responseCode()).isEqualTo(200);
+
+            String expected = "[\n" +
+                    "  {\n" +
+                    "    \"key\": \"SecretsFilePath\",\n" +
+                    "    \"message\": \"" + String.format("No secret config file at path '%s'.", noneExistingFile.getAbsolutePath()) + "\"\n" +
+                    "  }\n" +
+                    "]";
+
+            JSONAssert.assertEquals(expected, response.responseBody(), true);
+        }
+
+        @Test
+        void shouldBeErrorWhenSecretFileIsDirectory(@TempDir File testDir) throws UnhandledRequestTypeException, JSONException {
+            File notAFile = new File(testDir, "this-is-dir");
+            notAFile.mkdir();
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", REQUEST_VALIDATE_CONFIG);
+            request.setRequestBody(new Gson().toJson(Collections.singletonMap(SECRETS_FILE_PATH_PROPERTY, notAFile.getAbsolutePath())));
+
+            GoPluginApiResponse response = secretsPlugin.handle(request);
+
+            assertThat(response.responseCode()).isEqualTo(200);
+
+            String expected = "[\n" +
+                    "  {\n" +
+                    "    \"key\": \"SecretsFilePath\",\n" +
+                    "    \"message\": \"" + String.format("Secret config file path '%s' is not a normal file.", notAFile.getAbsolutePath()) + "\"\n" +
+                    "  }\n" +
+                    "]";
+
+            JSONAssert.assertEquals(expected, response.responseBody(), true);
+        }
+    }
+
+    @Nested
     class LookupSecret {
 
         @Test
         void shouldReturnValidResponseOnlyIfAllKeysArePresent() throws UnhandledRequestTypeException, JSONException {
-            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", lookupSecretRequestName);
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", LOOKUP_SECRET_REQUEST_NAME);
             LookupSecretRequest lookupSecretRequest = new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("secret-key", "username", "password"));
 
             request.setRequestBody(lookupSecretRequest.toJSON());
@@ -90,7 +165,7 @@ class FileBasedSecretsPluginTest {
 
         @Test
         void shouldReturnNotFoundErrorResponseIfOneOrMoreSecretsWithGivenKeyAreNotPresent() throws UnhandledRequestTypeException, JSONException {
-            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", lookupSecretRequestName);
+            DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest("secrets", "1.0", LOOKUP_SECRET_REQUEST_NAME);
 
             LookupSecretRequest lookupSecretRequest = new LookupSecretRequest(databaseFile.getAbsolutePath(), Arrays.asList("non-exiting-key"));
 

@@ -18,7 +18,7 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
   id = 'cd.go.secrets.file-based-plugin'
-  pluginVersion = '0.0.1'
+  pluginVersion = '0.0.2'
   goCdVersion = '19.3.0'
   name = 'File based secrets plugin for GoCD'
   description = 'File based secrets plugin for GoCD'

@@ -60,7 +60,8 @@ public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretReq
             Map<String, String> response = Collections.singletonMap("message", String.format("Secrets with keys %s not found.", unresolvedKeys));
             return new DefaultGoPluginApiResponse(NOT_FOUND_ERROR_CODE, GSON.toJson(response));
         } catch (IOException | GeneralSecurityException | BadSecretException e) {
-            return DefaultGoPluginApiResponse.error("Error while looking up secrets: " + e.getMessage());
+            Map<String, String> errorMessage = Collections.singletonMap("message", "Error while looking up secrets: " + e.getMessage());
+            return DefaultGoPluginApiResponse.error(GSON.toJson(errorMessage));
         }
     }
 

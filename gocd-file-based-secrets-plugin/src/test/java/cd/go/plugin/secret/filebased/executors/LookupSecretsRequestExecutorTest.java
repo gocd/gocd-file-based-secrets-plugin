@@ -24,7 +24,6 @@ import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +38,7 @@ import static org.mockito.Mockito.when;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 class LookupSecretsRequestExecutorTest {
+
     private File databaseFile;
 
     @BeforeEach
@@ -87,4 +87,15 @@ class LookupSecretsRequestExecutorTest {
         assertEquals("{\"message\":\"Secrets with keys [randomKey1, randomKey2] not found.\"}", response.responseBody(), true);
     }
 
+    @Test
+    void shouldErrorAsAMapWhenAnyExceptionOccurs() throws JSONException {
+        GoPluginApiRequest goPluginApiRequest = mock(GoPluginApiRequest.class);
+        when(goPluginApiRequest.requestBody()).thenReturn(
+                new LookupSecretRequest("some-non-existent-file.db", Arrays.asList("randomKey1", "randomKey2")).toJSON());
+
+        GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(goPluginApiRequest);
+
+        assertThat(response.responseCode()).isEqualTo(500);
+        assertEquals("{\"message\":\"Error while looking up secrets: File \\u0027some-non-existent-file.db\\u0027 does not exist\"}", response.responseBody(), true);
+    }
 }

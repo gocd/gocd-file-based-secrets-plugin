@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-    compile group: 'com.github.bdpiparva.plugin.base', name: 'gocd-plugin-base', version: '0.0.5'
+    compile group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '0.0.1'
     compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: '18.9.0'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     compile project(':db')

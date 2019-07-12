@@ -16,10 +16,10 @@
 
 package cd.go.plugin.secret.filebased;
 
+import cd.go.plugin.base.dispatcher.BaseBuilder;
+import cd.go.plugin.base.dispatcher.RequestDispatcher;
 import cd.go.plugin.secret.filebased.executors.LookupSecretsRequestExecutor;
 import cd.go.plugin.secret.filebased.model.SecretsConfiguration;
-import com.github.bdpiparva.plugin.base.dispatcher.BaseBuilder;
-import com.github.bdpiparva.plugin.base.dispatcher.RequestDispatcher;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;

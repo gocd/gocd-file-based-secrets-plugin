@@ -16,7 +16,7 @@
 
 package cd.go.plugin.secret.filebased.model;
 
-import com.github.bdpiparva.plugin.base.annotations.Property;
+import cd.go.plugin.base.annotations.Property;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;

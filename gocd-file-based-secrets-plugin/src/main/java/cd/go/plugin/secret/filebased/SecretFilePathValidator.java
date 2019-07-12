@@ -16,8 +16,8 @@
 
 package cd.go.plugin.secret.filebased;
 
-import com.github.bdpiparva.plugin.base.validation.ValidationResult;
-import com.github.bdpiparva.plugin.base.validation.Validator;
+import cd.go.plugin.base.validation.ValidationResult;
+import cd.go.plugin.base.validation.Validator;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;

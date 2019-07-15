@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+package cd.go.plugin.secret.filebased.util;
 
-    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.12.2'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.2'
-    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'
-}
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-test {
-    useJUnitPlatform()
+public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+
+    private int cacheSize;
+
+    public LRUCache(int cacheSize) {
+        super(16, 0.75f, true);
+        this.cacheSize = cacheSize;
+    }
+
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() >= cacheSize;
+    }
 }

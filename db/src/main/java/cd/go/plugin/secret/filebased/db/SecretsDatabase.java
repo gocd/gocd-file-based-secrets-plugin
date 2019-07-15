@@ -34,11 +34,13 @@ import java.util.Set;
 import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class SecretsDatabase {
+
     private static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .serializeNulls()
             .setPrettyPrinting()
             .create();
+
     @Expose
     @SerializedName("secret_key")
     private final String secretKey;
@@ -46,6 +48,8 @@ public class SecretsDatabase {
     @Expose
     @SerializedName("secrets")
     private final LinkedHashMap<String, String> secrets = new LinkedHashMap<>();
+
+    final LinkedHashMap<String, String> decryptedSecrets = new LinkedHashMap<>();
 
     public SecretsDatabase(String secretKey) {
         this.secretKey = secretKey;
@@ -56,15 +60,26 @@ public class SecretsDatabase {
     }
 
     public SecretsDatabase addSecret(String name, String value) throws GeneralSecurityException {
-        secrets.put(name, Cipher.encrypt(secretKey, value));
+        synchronized (this) {
+            secrets.put(name, Cipher.encrypt(secretKey, value));
+            decryptedSecrets.remove(name);
+        }
         return this;
     }
 
-    public String getSecret(String name) throws BadSecretException, GeneralSecurityException {
-        if (secrets.containsKey(name)) {
-            return Cipher.decrypt(secretKey, secrets.get(name));
+    public String getSecret(String name) {
+        synchronized (this) {
+            return decryptedSecrets.computeIfAbsent(name, key -> {
+                if (secrets.containsKey(name)) {
+                    try {
+                        return Cipher.decrypt(secretKey, secrets.get(name));
+                    } catch (BadSecretException | GeneralSecurityException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return null;
+            });
         }
-        return null;
     }
 
     public Set<String> getAllSecretKeys() {
@@ -72,7 +87,10 @@ public class SecretsDatabase {
     }
 
     public SecretsDatabase removeSecret(String name) {
-        secrets.remove(name);
+        synchronized (this) {
+            secrets.remove(name);
+            decryptedSecrets.remove(name);
+        }
         return this;
     }
 
@@ -87,5 +105,15 @@ public class SecretsDatabase {
 
     public String toJSON() {
         return GSON.toJson(this);
+    }
+
+
+    // for testing
+    String getSecretKey() {
+        return secretKey;
+    }
+
+    LinkedHashMap<String, String> getSecrets() {
+        return secrets;
     }
 }

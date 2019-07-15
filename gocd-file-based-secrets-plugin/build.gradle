@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
+plugins {
+    id "me.champeau.gradle.jmh" version "0.4.8"
+}
+
 configurations {
     extractedAtTopLevel
 }
 
 dependencies {
-    compile group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '0.0.1'
     compileOnly group: 'cd.go.plugin', name: 'go-plugin-api', version: '18.9.0'
+    compile group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '0.0.1'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
     compile project(':db')
     compile project(':cli')
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
     extractedAtTopLevel project(':jar-class-loader')
 
@@ -54,4 +62,8 @@ jar {
     from(project.configurations.extractedAtTopLevel.collect { it.isDirectory() ? it : zipTree(it) }) {
         into("/")
     }
+}
+
+test {
+    useJUnitPlatform()
 }

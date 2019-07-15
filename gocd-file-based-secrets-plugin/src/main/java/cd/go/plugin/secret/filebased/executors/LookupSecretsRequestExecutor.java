@@ -17,30 +17,42 @@
 package cd.go.plugin.secret.filebased.executors;
 
 import cd.go.plugin.base.executors.secrets.LookupExecutor;
-import cd.go.plugin.secret.filebased.db.BadSecretException;
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
+import cd.go.plugin.secret.filebased.util.LRUCache;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.io.UncheckedIOException;
 import java.util.*;
+import java.util.function.BiFunction;
+
+import static java.util.Collections.synchronizedMap;
 
 public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretRequest> {
 
-    public static final int NOT_FOUND_ERROR_CODE = 404;
+    private static final int NOT_FOUND_ERROR_CODE = 404;
+
+    private static final int MAX_ENTRIES = 512;
+
+    // cheap cache implementation
+    private static final Map<File, CacheEntry> FILE_STAT_CACHE = synchronizedMap(new LRUCache<>(MAX_ENTRIES));
 
     @Override
     protected GoPluginApiResponse execute(LookupSecretRequest lookupSecretsRequest) {
         List<Map<String, String>> responseList = new ArrayList<>();
 
         File secretsFile = new File(lookupSecretsRequest.getSecretsFilePath());
+
+
         List<String> unresolvedKeys = new ArrayList<>();
 
         try {
-            SecretsDatabase secretsDatabase = SecretsDatabase.readFrom(secretsFile);
+            CacheEntry cacheEntry = FILE_STAT_CACHE.compute(secretsFile, FileCacheEntryCacheEntryBiFunction.INSTANCE);
+            SecretsDatabase secretsDatabase = cacheEntry.getSecretsDatabase();
+
             for (String key : lookupSecretsRequest.getKeys()) {
                 String secret = secretsDatabase.getSecret(key);
                 if (secret != null) {
@@ -59,7 +71,7 @@ public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretReq
 
             Map<String, String> response = Collections.singletonMap("message", String.format("Secrets with keys %s not found.", unresolvedKeys));
             return new DefaultGoPluginApiResponse(NOT_FOUND_ERROR_CODE, GSON.toJson(response));
-        } catch (IOException | GeneralSecurityException | BadSecretException e) {
+        } catch (IOException e) {
             Map<String, String> errorMessage = Collections.singletonMap("message", "Error while looking up secrets: " + e.getMessage());
             return DefaultGoPluginApiResponse.error(GSON.toJson(errorMessage));
         }
@@ -68,5 +80,28 @@ public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretReq
     @Override
     protected LookupSecretRequest parseRequest(String body) {
         return LookupSecretRequest.fromJSON(body);
+    }
+
+    public static class FileCacheEntryCacheEntryBiFunction implements BiFunction<File, CacheEntry, CacheEntry> {
+
+        public static FileCacheEntryCacheEntryBiFunction INSTANCE = new FileCacheEntryCacheEntryBiFunction();
+
+        private FileCacheEntryCacheEntryBiFunction() {
+        }
+
+        @Override
+        public CacheEntry apply(File file, CacheEntry existingCacheEntry) {
+            if (existingCacheEntry == null) {
+                existingCacheEntry = new CacheEntry(file);
+            }
+
+            try {
+                existingCacheEntry.refresh();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+
+            return existingCacheEntry;
+        }
     }
 }

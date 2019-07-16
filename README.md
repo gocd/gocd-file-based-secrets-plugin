@@ -108,18 +108,34 @@ For a given secret config verify if the file database can be accessed by the plu
 
 ### Enable Debug Logs
 
+#### If you are on GoCD version 19.6 and above:
+
+Edit the file `wrapper-properties.conf` on your GoCD server and add the following options. The location of the `wrapper-properties.conf` can be found in the [installation documentation](https://docs.gocd.org/current/installation/installing_go_server.html) of the GoCD server.
+
+```properties
+# We recommend that you begin with the index `100` and increment the index for each system property
+wrapper.java.additional.100=-Dplugin.cd.go.secrets.file-based-plugin.log.level=debug
+```
+
+If you're running with GoCD server 19.6 and above on docker using one of the supported GoCD server images, set the environment variable `GOCD_SERVER_JVM_OPTIONS`:
+
+```shell
+docker run -e "GOCD_SERVER_JVM_OPTIONS=-Dplugin.cd.go.secrets.file-based-plugin.log.level=debug" ...
+```
+
+#### If you are on GoCD version 19.5 and lower:
 * On Linux:
 
     Enabling debug level logging can help you troubleshoot an issue with this plugin. To enable debug level logs, edit the file `/etc/default/go-server` (for Linux) to add:
 
     ```shell
-    export GO_SERVER_SYSTEM_PROPERTIES="$GO_SERVER_SYSTEM_PROPERTIES -Dcd.go.secrets.file-based-plugin.log.level=debug"
+    export GO_SERVER_SYSTEM_PROPERTIES="$GO_SERVER_SYSTEM_PROPERTIES -Dplugin.cd.go.secrets.file-based-plugin.log.level=debug"
     ```
 
     If you're running the server via `./server.sh` script:
 
     ```shell
-    $ GO_SERVER_SYSTEM_PROPERTIES="-Dcd.go.secrets.file-based-plugin.log.level=debug" ./server.sh
+    $ GO_SERVER_SYSTEM_PROPERTIES="-Dplugin.cd.go.secrets.file-based-plugin.log.level=debug" ./server.sh
     ```
 
 * On windows:
@@ -129,7 +145,7 @@ For a given secret config verify if the file database can be accessed by the plu
     ```
     # config/wrapper-properties.conf
     # since the last "wrapper.java.additional" index is 15, we use the next available index.
-    wrapper.java.additional.16=-Dcd.go.secrets.file-based-plugin.log.level=debug
+    wrapper.java.additional.16=-Dplugin.cd.go.secrets.file-based-plugin.log.level=debug
     ```
 
 ## License

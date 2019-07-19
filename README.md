@@ -1,6 +1,8 @@
 # GoCD File Based Secrets Plugin
 
-This is a file based authentication plugin which implements the GoCD [Secret Plugin](https://plugin-api.gocd.org/current/secrets) endpoint. This plugin allows retrieving of secrets that are stored in encrypted files.
+This is a file based secrets plugin which implements the GoCD [Secret Plugin](https://plugin-api.gocd.org/current/secrets) endpoint. This plugin allows retrieving of secrets that are stored in encrypted files.
+
+For comprehensive details about Secret Management in GoCD please refer to the [documentation](https://docs.gocd.org/current/configuration/secrets_management.html)
 
 ## Building the code base
 
@@ -9,6 +11,7 @@ To build the jar, run `./gradlew clean test assemble`
 ## Installation
 
 - This plugin comes bundled along with the GoCD server, hence a separate installation is not required.
+- GoCD introduced support for Secrets Management in v19.6.0, in order to use this plugin your GoCD version should >= 19.6.0.
 
 ## Usage instructions
   
@@ -63,7 +66,7 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
       </secretConfig>
     </secretConfigs>
     ```
-`<rules>` tag defines where this secretConfig is allowed/denied to be referred.
+`<rules>` tag defines where this secretConfig is allowed/denied to be referred. For more details about rules and examples refer the GoCD Secret Management [documentation](https://docs.gocd.org/current/configuration/secrets_management.html)
 
 * The plugin can also be configured to use multiple secret database files if required:
 

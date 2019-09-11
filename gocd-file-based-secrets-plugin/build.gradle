@@ -30,7 +30,7 @@ dependencies {
     compile project(':db')
     compile project(':cli')
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
 
     extractedAtTopLevel project(':jar-class-loader')

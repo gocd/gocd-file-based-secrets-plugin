@@ -11,7 +11,7 @@ To build the jar, run `./gradlew clean test assemble`
 ## Installation
 
 - This plugin comes bundled along with the GoCD server, hence a separate installation is not required.
-- GoCD introduced support for Secrets Management in v19.6.0, in order to use this plugin your GoCD version should be >= 19.6.0.
+- GoCD introduced support for Secrets Management in v19.6.0, in order to use this plugin your GoCD version should >= 19.6.0.
 
 ## Usage instructions
   

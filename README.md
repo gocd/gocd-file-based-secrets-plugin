@@ -102,6 +102,13 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
       </secretConfig>
     </secretConfigs>
     ```
+A secret file is made of JSON, and has the following data structure:
+
+```json
+[
+  { "key": "foo", "value": "bar" }
+]
+```
 
 ## Troubleshooting
 

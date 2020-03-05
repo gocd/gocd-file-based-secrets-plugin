@@ -2,7 +2,7 @@
 
 This is a file based secrets plugin which implements the GoCD [Secret Plugin](https://plugin-api.gocd.org/current/secrets) endpoint. This plugin allows retrieving of secrets that are stored in encrypted files.
 
-For comprehensive details about Secret Management in GoCD please refer to the [documentation](https://docs.gocd.org/current/configuration/secrets_management.html)
+For comprehensive details about Secret Management in GoCD please refer to the [documentation](https://docs.gocd.org/current/configuration/secrets_management.html).
 
 ## Building the code base
 
@@ -66,7 +66,8 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
       </secretConfig>
     </secretConfigs>
     ```
-`<rules>` tag defines where this secretConfig is allowed/denied to be referred. For more details about rules and examples refer the GoCD Secret Management [documentation](https://docs.gocd.org/current/configuration/secrets_management.html)
+
+    `<rules>` tag defines where this secretConfig is allowed/denied to be referred. For more details about rules and examples refer the GoCD Secret Management [documentation](https://docs.gocd.org/current/configuration/secrets_management.html)
 
 * The plugin can also be configured to use multiple secret database files if required:
 
@@ -102,6 +103,7 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
       </secretConfig>
     </secretConfigs>
     ```
+
 A secret file is made of JSON, and has the following data structure:
 
 ```json
@@ -109,6 +111,8 @@ A secret file is made of JSON, and has the following data structure:
   { "key": "foo", "value": "bar" }
 ]
 ```
+
+The secret defined in the above example can be used as: `{{SECRET:[Env1Secrets][foo]}}` and will have the value `bar` at run-time.
 
 ## Troubleshooting
 

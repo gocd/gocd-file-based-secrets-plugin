@@ -21,23 +21,23 @@ To build the jar, run `./gradlew clean test assemble`
   The CONFIG_DIR is typically /etc/go on Linux and C:\Program Files\Go Server\config on Windows. 
 
   ```shell
-  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar init -f secret.db
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar init -f secrets.json
   ```
   3. Add/Update a secret:
   ```shell
-  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar add -f secret.db -n my-password -v
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar add -f secrets.json -n my-password -v
   ```
   4. Show the value of the secret:
   ```shell
-  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar show -f secret.db -n my-password
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar show -f secrets.json -n my-password
   ```
   5. Show all secret keys:
   ```shell
-  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar keys -f secret.db
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar keys -f secrets.json
   ```
   6. Remove a secret:
   ```shell
-  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar remove -f secret.db -n my-password
+  java -jar gocd-file-based-secrets-plugin-$VERSION$.jar remove -f secrets.json -n my-password
   ```
 
 ## Configuration
@@ -55,7 +55,7 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
            <configuration>
               <property>
                   <key>SecretsFilePath</key>
-                  <value>/godata/config/secretsDatabase.json</value>
+                  <value>/godata/config/secrets.json</value>
               </property>
           </configuration>
           <rules>
@@ -78,7 +78,7 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
            <configuration>
               <property>
                   <key>SecretsFilePath</key>
-                  <value>/godata/config/secretsDatabase.json</value>
+                  <value>/godata/config/secrets.json</value>
               </property>
           </configuration>
           <rules>
@@ -92,7 +92,7 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
            <configuration>
               <property>
                   <key>SecretsFilePath</key>
-                  <value>/godata/config/secretsDatabase_env2.json</value>
+                  <value>/godata/config/secrets_env2.json</value>
               </property>
           </configuration>
           <rules>
@@ -107,12 +107,15 @@ The configuration can be added directly to the `config.xml` using the `<secretCo
 A secret file is made of JSON, and has the following data structure:
 
 ```json
-[
-  { "key": "foo", "value": "bar" }
-]
+{
+  "secret_key": "...",
+  "secrets": {
+    "my-password": "AES:..."
+  }
+}
 ```
 
-The secret defined in the above example can be used as: `{{SECRET:[Env1Secrets][foo]}}` and will have the value `bar` at run-time.
+The secret defined in the above example can be used as `{{SECRET:[Env1Secrets][my-password]}}` in environment variables or SCM materials.
 
 ## Troubleshooting
 

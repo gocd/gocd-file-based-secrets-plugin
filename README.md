@@ -115,7 +115,7 @@ A secret file is made of JSON, and has the following data structure:
 }
 ```
 
-The secret defined in the above example can be used as `{{SECRET:[Env1Secrets][my-password]}}` in environment variables or SCM materials.
+The secret defined in the above example can be used by defining a Secret Param with syntax: `{{SECRET:[Env1Secrets][my-password]}}` in entities which support secrets. For more information about supported entities refer the [Secrets Management](https://docs.gocd.org/current/configuration/secrets_management.html) documentation.
 
 ## Troubleshooting
 

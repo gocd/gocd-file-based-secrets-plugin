@@ -31,8 +31,8 @@ dependencies {
     implementation project(':db')
     implementation project(':cli')
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
     extractedAtTopLevel project(':jar-class-loader')
 

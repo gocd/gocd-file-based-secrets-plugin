@@ -96,6 +96,6 @@ class LookupSecretsRequestExecutorTest {
         GoPluginApiResponse response = new LookupSecretsRequestExecutor().execute(goPluginApiRequest);
 
         assertThat(response.responseCode()).isEqualTo(500);
-        assertEquals("{\"message\":\"Error while looking up secrets: File \\u0027some-non-existent-file.db\\u0027 does not exist\"}", response.responseBody(), true);
+        assertEquals("{\"message\":\"Error while looking up secrets: some-non-existent-file.db (No such file or directory)\"}", response.responseBody(), true);
     }
 }

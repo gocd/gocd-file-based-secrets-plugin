@@ -16,7 +16,7 @@
 
 dependencies {
     implementation project(':db')
-    implementation group: 'com.beust', name: 'jcommander', version: '1.72'
+    implementation group: 'com.beust', name: 'jcommander', version: '1.82'
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.22.0'

@@ -94,11 +94,11 @@ public class Main {
         cmd.setProgramName("java -jar <path.to.plugin.jar.file>");
         cmd.setColumnSize(100);
         if (parsedCommand == null) {
-            cmd.usage(out);
+            cmd.getUsageFormatter().usage(out);
         } else {
-            cmd.usage(parsedCommand, out);
+            cmd.getUsageFormatter().usage(parsedCommand, out);
         }
-        System.err.println(out.toString());
+        System.err.println(out);
         exitter.accept(statusCode);
     }
 }

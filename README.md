@@ -141,7 +141,7 @@ docker run -e "GOCD_SERVER_JVM_OPTIONS=-Dplugin.cd.go.secrets.file-based-plugin.
 ## License
 
 ```plain
-Copyright 2019 ThoughtWorks, Inc.
+Copyright 2022 Thoughtworks, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

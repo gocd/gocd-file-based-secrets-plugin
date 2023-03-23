@@ -19,6 +19,6 @@ package cd.go.plugin.secret.filebased.cli.args;
 import com.beust.jcommander.Parameter;
 
 public abstract class HasNameArgs extends DatabaseFileArgs {
-    @Parameter(names = {"--name", "-n"}, required = true, description = "The name of the secret to remove.")
+    @Parameter(names = {"--name", "-n"}, required = true, description = "The name of the secret.")
     public String key;
 }

@@ -16,13 +16,13 @@
 
 package cd.go.plugin.secret.filebased.util;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -69,7 +69,7 @@ class FileStatTest {
             fileStat.refresh();
 
             assertThat(fileStat.changed(0)).isFalse();
-            FileUtils.writeStringToFile(file, "foo", UTF_8);
+            Files.writeString(file.toPath(), "foo", UTF_8);
             Thread.sleep(100);
             assertThat(fileStat.changed(110)).isFalse();
         }

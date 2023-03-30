@@ -20,18 +20,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Set;
-
-import static org.apache.commons.io.FileUtils.readFileToString;
 
 public class SecretsDatabase {
 
@@ -95,11 +93,11 @@ public class SecretsDatabase {
     }
 
     public static SecretsDatabase readFrom(File secretFile) throws IOException {
-        return GSON.fromJson(readFileToString(secretFile, StandardCharsets.UTF_8), SecretsDatabase.class);
+        return GSON.fromJson(Files.readString(secretFile.toPath(), StandardCharsets.UTF_8), SecretsDatabase.class);
     }
 
     public SecretsDatabase saveTo(File secretFile) throws IOException {
-        FileUtils.write(secretFile, toJSON(), StandardCharsets.UTF_8);
+        Files.writeString(secretFile.toPath(), toJSON(), StandardCharsets.UTF_8);
         return this;
     }
 

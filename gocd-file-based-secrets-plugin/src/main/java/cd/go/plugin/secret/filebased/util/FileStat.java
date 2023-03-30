@@ -17,11 +17,10 @@
 package cd.go.plugin.secret.filebased.util;
 
 import lombok.Getter;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -87,8 +86,8 @@ public class FileStat {
     private List<Byte> computeDigest() {
         MessageDigest messageDigest = getMessageDigest();
         messageDigest.reset();
-        try (InputStream is = new BufferedInputStream(new FileInputStream(file), 1024 * 32)) {
-            IOUtils.copy(is, new DigestOutputStream(new NullOutputStream(), messageDigest));
+        try {
+            Files.copy(file.toPath(), new DigestOutputStream(OutputStream.nullOutputStream(), messageDigest));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

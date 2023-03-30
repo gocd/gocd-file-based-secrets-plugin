@@ -18,17 +18,17 @@ package cd.go.plugin.secret.filebased.cli.args;
 
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import com.beust.jcommander.Parameters;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.Consumer;
 
 @Parameters(commandDescription = "Initialize the secret database file. Should be run before any other commands as it generates secrets database file used by other commands.", commandNames = "init")
 public class InitArgs extends DatabaseFileArgs {
     public void execute(Consumer<Integer> exitter) throws NoSuchAlgorithmException, IOException {
-        FileUtils.write(databaseFile, new SecretsDatabase().toJSON(), StandardCharsets.UTF_8);
+        Files.writeString(databaseFile.toPath(), new SecretsDatabase().toJSON(), StandardCharsets.UTF_8);
         System.err.println("Initialized secret database file in " + databaseFile);
     }
 }

@@ -16,6 +16,7 @@
 
 package cd.go.plugin.secret.filebased.executors;
 
+import cd.go.plugin.base.GsonTransformer;
 import cd.go.plugin.base.executors.secrets.LookupExecutor;
 import cd.go.plugin.secret.filebased.db.SecretsDatabase;
 import cd.go.plugin.secret.filebased.model.LookupSecretRequest;
@@ -46,7 +47,6 @@ public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretReq
 
         File secretsFile = new File(lookupSecretsRequest.getSecretsFilePath());
 
-
         List<String> unresolvedKeys = new ArrayList<>();
 
         try {
@@ -66,14 +66,14 @@ public class LookupSecretsRequestExecutor extends LookupExecutor<LookupSecretReq
             }
 
             if (unresolvedKeys.isEmpty()) {
-                return DefaultGoPluginApiResponse.success(GSON.toJson(responseList));
+                return DefaultGoPluginApiResponse.success(GsonTransformer.toJson(responseList));
             }
 
             Map<String, String> response = Collections.singletonMap("message", String.format("Secrets with keys %s not found.", unresolvedKeys));
-            return new DefaultGoPluginApiResponse(NOT_FOUND_ERROR_CODE, GSON.toJson(response));
+            return new DefaultGoPluginApiResponse(NOT_FOUND_ERROR_CODE, GsonTransformer.toJson(response));
         } catch (IOException e) {
             Map<String, String> errorMessage = Collections.singletonMap("message", "Error while looking up secrets: " + e);
-            return DefaultGoPluginApiResponse.error(GSON.toJson(errorMessage));
+            return DefaultGoPluginApiResponse.error(GsonTransformer.toJson(errorMessage));
         }
     }
 

@@ -18,7 +18,6 @@ package cd.go.plugin.secret.filebased;
 
 import cd.go.plugin.base.validation.ValidationResult;
 import cd.go.plugin.base.validation.Validator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class SecretFilePathValidator implements Validator {
     public ValidationResult validate(Map<String, String> requestBody) {
         ValidationResult validationResult = new ValidationResult();
         String filePath = requestBody.get(SECRETS_FILE_PATH_PROPERTY);
-        if (StringUtils.isBlank(filePath)) {
+        if (filePath == null || filePath.isBlank()) {
             return addErrorAndReturn(validationResult, "SecretsFilePath must not be blank.");
         }
 

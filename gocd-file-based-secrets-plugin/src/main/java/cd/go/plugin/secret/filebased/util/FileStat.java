@@ -17,16 +17,19 @@
 package cd.go.plugin.secret.filebased.util;
 
 import lombok.Getter;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FileStat {
 
@@ -92,7 +95,10 @@ public class FileStat {
             throw new UncheckedIOException(e);
         }
 
-        return Arrays.asList(ArrayUtils.toObject(messageDigest.digest()));
+        byte[] digest = messageDigest.digest();
+        return IntStream.range(0, digest == null ? 0 : digest.length)
+                .mapToObj( i -> Byte.valueOf(digest[i]))
+                .collect(Collectors.toList());
     }
 
     private static MessageDigest createDigester() {

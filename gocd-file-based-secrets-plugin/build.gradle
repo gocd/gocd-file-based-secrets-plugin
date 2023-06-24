@@ -33,8 +33,7 @@ ext {
 
 dependencies {
     compileOnly project.deps.gocdPluginApi
-    implementation group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '0.0.1'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    implementation group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '0.0.5'
 
     implementation project(':db')
     implementation project(':cli')

@@ -91,7 +91,7 @@ class MainTest {
 
                 new Main("add", "-f", databaseFile.getAbsolutePath(), "-n", "password", "-v", "p@ssw0rd").run(dummyExitter);
                 assertThat(out.toString()).isEmpty();
-                assertThat(err.toString()).contains("FileNotFoundException");
+                assertThat(err.toString()).contains("NoSuchFileException");
                 assertThat(err.toString()).contains(databaseFile.getAbsolutePath());
                 verify(dummyExitter).accept(-1);
             });
@@ -169,7 +169,7 @@ class MainTest {
                 new Main("show", "-f", databaseFile.getAbsolutePath(), "-n", "deploy-key").run(dummyExitter);
                 assertThat(out.toString()).isEmpty();
                 assertThat(err.toString())
-                        .contains("FileNotFoundException")
+                        .contains("NoSuchFileException")
                         .contains(databaseFile.getAbsolutePath());
                 verify(dummyExitter).accept(-1);
             });
@@ -252,7 +252,7 @@ class MainTest {
                 new Main("remove", "-f", databaseFile.getAbsolutePath(), "-n", "deploy-key").run(dummyExitter);
                 assertThat(out.toString()).isEmpty();
                 assertThat(err.toString())
-                        .contains("FileNotFoundException")
+                        .contains("NoSuchFileException")
                         .contains(databaseFile.getAbsolutePath());
                 verify(dummyExitter).accept(-1);
             });

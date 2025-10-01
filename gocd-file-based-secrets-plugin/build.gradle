@@ -24,8 +24,8 @@ configurations {
 
 ext {
     deps = [
-        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.2.0',
-        lombok       : 'org.projectlombok:lombok:1.18.38',
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
+        lombok       : 'org.projectlombok:lombok:1.18.42',
     ]
 
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -33,7 +33,7 @@ ext {
 
 dependencies {
     compileOnly project.deps.gocdPluginApi
-    implementation group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '1.0.4'
+    implementation group: 'cd.go.plugin.base', name: 'gocd-plugin-base', version: '1.0.5'
 
     implementation project(':db')
     implementation project(':cli')
@@ -44,11 +44,11 @@ dependencies {
     extractedAtTopLevel project(':jar-class-loader')
 
     testCompileOnly project.deps.gocdPluginApi
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.6'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.18.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.20.0'
     testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.3'
 }
 

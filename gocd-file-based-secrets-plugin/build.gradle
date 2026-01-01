@@ -24,7 +24,7 @@ configurations {
 
 ext {
     deps = [
-        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.4.0',
         lombok       : 'org.projectlombok:lombok:1.18.42',
     ]
 
@@ -48,7 +48,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-core:5.20.0'
+    testImplementation 'org.mockito:mockito-core:5.21.0'
     testImplementation 'org.skyscreamer:jsonassert:1.5.3'
 }
 

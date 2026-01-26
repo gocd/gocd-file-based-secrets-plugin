@@ -44,7 +44,7 @@ dependencies {
     extractedAtTopLevel project(':jar-class-loader')
 
     testCompileOnly project.deps.gocdPluginApi
-    testImplementation 'org.assertj:assertj-core:3.27.6'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

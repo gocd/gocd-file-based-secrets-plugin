@@ -15,7 +15,9 @@
  */
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation('com.google.code.gson:gson:2.13.2') {
+        exclude module: 'error_prone_annotations'
+    }
 
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'

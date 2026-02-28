@@ -18,7 +18,7 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
   id = 'cd.go.secrets.file-based-plugin'
-  pluginVersion = '1.2.0'
+  pluginVersion = '1.2.1'
   goCdVersion = '22.1.0'
   name = 'File based secrets plugin for GoCD'
   description = 'File based secrets plugin for GoCD'
@@ -48,6 +48,6 @@ subprojects {
     mavenCentral()
   }
   dependencies {
-    testImplementation platform('org.junit:junit-bom:6.0.2')
+    testImplementation platform('org.junit:junit-bom:6.0.3')
   }
 }

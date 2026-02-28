@@ -33,7 +33,7 @@ ext {
 
 dependencies {
     compileOnly project.deps.gocdPluginApi
-    implementation 'cd.go.plugin.base:gocd-plugin-base:1.1.1'
+    implementation 'cd.go.plugin.base:gocd-plugin-base:2.0.0'
 
     implementation project(':db')
     implementation project(':cli')
@@ -48,7 +48,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockito:mockito-core:5.21.0'
+    testImplementation 'org.mockito:mockito-core:5.22.0'
     testImplementation 'org.skyscreamer:jsonassert:1.5.3'
 }
 

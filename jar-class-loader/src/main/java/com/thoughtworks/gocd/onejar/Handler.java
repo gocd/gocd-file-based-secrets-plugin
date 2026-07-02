@@ -18,12 +18,8 @@ package com.thoughtworks.gocd.onejar;
 
 import com.thoughtworks.gocd.Boot;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import java.net.*;
 
 public class Handler extends URLStreamHandler {
 
@@ -44,7 +40,7 @@ public class Handler extends URLStreamHandler {
         if (handlerPackage == null || handlerPackage.trim().isEmpty()) {
             handlerPackage = "";
         }
-        if (handlerPackage.length() > 0) {
+        if (!handlerPackage.isEmpty()) {
             handlerPackage = "|" + handlerPackage;
         }
         handlerPackage = Boot.class.getPackage().getName() + handlerPackage;
@@ -53,16 +49,16 @@ public class Handler extends URLStreamHandler {
     }
 
     @Override
-    protected URLConnection openConnection(URL u) throws IOException {
+    protected URLConnection openConnection(URL u) {
         URLConnection urlConnection = new URLConnection(u) {
 
             @Override
-            public void connect() throws IOException {
+            public void connect() {
 
             }
 
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 String file = u.getFile();
                 return Boot.class.getResourceAsStream("/" + file);
             }
@@ -73,7 +69,7 @@ public class Handler extends URLStreamHandler {
 
     public static URL toOneJarUrl(String name) {
         try {
-            return new URL(PROTOCOL, null, -1, name);
+            return URI.create(PROTOCOL + ":" + name).toURL();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

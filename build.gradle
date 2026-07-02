@@ -18,8 +18,8 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
   id = 'cd.go.secrets.file-based-plugin'
-  pluginVersion = '1.2.1'
-  goCdVersion = '22.1.0'
+  pluginVersion = '2.0.0'
+  goCdVersion = '24.1.0'
   name = 'File based secrets plugin for GoCD'
   description = 'File based secrets plugin for GoCD'
   vendorName = 'Thoughtworks, Inc.'
@@ -44,6 +44,15 @@ allprojects {
 }
 
 subprojects {
+  java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+  }
+
   repositories {
     mavenCentral()
   }

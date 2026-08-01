@@ -24,7 +24,7 @@ configurations {
 
 ext {
     deps = [
-        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.4.0',
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:26.1.0',
         lombok       : 'org.projectlombok:lombok:1.18.46',
     ]
 
@@ -33,7 +33,7 @@ ext {
 
 dependencies {
     compileOnly project.deps.gocdPluginApi
-    implementation 'cd.go.plugin.base:gocd-plugin-base:2.0.1'
+    implementation 'cd.go.plugin.base:gocd-plugin-base:2.0.2'
 
     implementation project(':db')
     implementation project(':cli')

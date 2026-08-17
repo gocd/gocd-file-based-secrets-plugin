@@ -16,7 +16,7 @@
 
 dependencies {
     implementation project(':db')
-    implementation 'com.beust:jcommander:1.82'
+    implementation 'org.jcommander:jcommander:3.0'
 
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
